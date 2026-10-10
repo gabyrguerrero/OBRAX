@@ -3,16 +3,13 @@ import flet as ft
 
 def main(page: ft.Page):
     page.title = "OBRAx"
+    page.theme_mode = ft.ThemeMode.LIGHT
     page.bgcolor = ft.Colors.WHITE
     page.padding = 0
 
     def elegir_rol(rol):
-        # Por ahora solo muestra un aviso; luego aquí navegas a la vista del rol
-        page.snack_bar = ft.SnackBar(ft.Text(f"Entraste como {rol}"))
-        page.snack_bar.open = True
-        page.update()
+        print(f"Entraste como {rol}")  # por ahora solo en la terminal
 
-    # Esquina superior izquierda: nombre de la app
     encabezado = ft.Container(
         content=ft.Text(
             "OBRAx", size=28, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE
@@ -20,7 +17,6 @@ def main(page: ft.Page):
         padding=20,
     )
 
-    # Botón centrado que despliega las dos opciones
     boton_rol = ft.PopupMenuButton(
         content=ft.Container(
             content=ft.Text("Ingresar como", color=ft.Colors.WHITE, size=16),
@@ -36,13 +32,14 @@ def main(page: ft.Page):
         ],
     )
 
-    cuerpo = ft.Container(
-        content=boton_rol,
-        expand=True,  # ocupa todo el espacio restante
-        alignment=ft.Alignment(0, 0),  # centra el botón
+    cuerpo = ft.Column(
+        [boton_rol],
+        expand=True,
+        alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
-    page.add(ft.Column([encabezado, cuerpo], expand=True, spacing=0))
+    page.add(encabezado, cuerpo)
 
 
 ft.app(target=main)
