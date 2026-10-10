@@ -1,39 +1,40 @@
+# OBRAx · Gestión y Control de Obra
 
+Aplicación de escritorio hecha con **Flet + Python (dataclasses)**. El **residente** crea la obra,
+programa actividades y llena el reporte diario; el **gerente** supervisa avance, costos y atrasos.
 
-Aplicación de escritorio para que el **residente** cree la obra, programe actividades y llene el
-reporte diario (avances, personal, horas, fotos y novedades), y para que el **gerente** supervise
-avance, costos de mano de obra, rendimientos y atrasos.
-
-
+## Ejecutar (Ubuntu)
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
+source venv/bin/activate
 pip install -r requirements.txt
-sudo apt install -y zenity      # necesario en Linux para el selector de fotos
-python main.py                  # o:  flet run
+sudo apt install -y zenity        # selector de fotos en Linux
+python main.py
 ```
+
+En la primera pantalla elige **Cargar datos de ejemplo** para ver todo funcionando.
 
 ## Estructura
 
-| Carpeta / archivo | Qué contiene |
+| Archivo | Para qué sirve |
 |---|---|
 | `main.py` | Punto de entrada |
-| `obrax/modelos.py` | Dataclasses: `Obra`, `Capitulo`, `Actividad`, `Trabajador`, `Reporte`, `Avance`, `Asistencia`, `Foto` |
-| `obrax/calculos.py` | Avance, cronograma, costos, rendimientos (sin Flet; se prueba solo) |
-| `obrax/repositorio.py` | SQLite generado a partir de las dataclasses |
-| `obrax/informes.py` | Informes diario/semanal/mensual/final en CSV, Excel y PDF |
-| `obrax/vistas/` | Una pantalla por archivo |
-| `tests/` | Pruebas: `python -m unittest discover -s tests -t .` |
-| `datos/` | Se crea al ejecutar: `obrax.db`, `fotos/`, `informes/` |
+| `router.py` | Barra superior, menú lateral, vista residente/gerente y cambio de pantallas |
+| `database/models.py` | Dataclasses: Obra, Capitulo, Actividad, Trabajador, Reporte, Avance, Asistencia, Foto |
+| `database/db.py` | SQLite generado a partir de las dataclasses (`datos/obrax.db`) |
+| `database/demo.py` | Datos de ejemplo |
+| `services/calculos.py` | Avance, cronograma, costos y rendimientos |
+| `services/exportar.py` | Informes diario, semanal, mensual y final en PDF, Excel y CSV |
+| `views/crear_obra.py` | Obra, capítulos, actividades, subactividades, personal y cierre |
+| `views/programacion.py` | Cronograma: programado vs real |
+| `views/reporte_diario.py` | Reporte diario: avances, personal, horas, fotos y novedades |
+| `views/panel_gerencial.py` | Panel del gerente |
+| `views/informes.py` | Informes y bitácora fotográfica |
+| `tests/` | `python -m unittest discover -s tests -t .` |
 
-## Cómo se calcula el costo
+## Costos
 
 - Valor hora = salario × (1 + costo laboral %) ÷ 240.
 - Hora extra = valor hora × (1 + recargo %).
 - Si un trabajador participa en varias actividades, su costo del día se reparte en partes iguales entre ellas.
-- Costo por unidad = costo de mano de obra de la actividad ÷ cantidad ejecutada. Rendimiento = cantidad ÷ horas.
-
-## Compartir con el gerente
-
-La base SQLite es local. Para que el gerente vea los datos desde otro equipo, ejecuta la app en un
-servidor con `flet run --web` (o migra `repositorio.py` a PostgreSQL).
+- Costo por unidad = costo de mano de obra ÷ cantidad ejecutada. Rendimiento = cantidad ÷ horas.
